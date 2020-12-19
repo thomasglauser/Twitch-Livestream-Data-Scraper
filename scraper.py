@@ -97,7 +97,7 @@ def get_stream_data(client_id, auth_token, user_id):
     START_TIMESTAMP = datetime.datetime.strptime(response["started_at"], '%Y-%m-%dT%H:%M:%SZ')
   except:
     STREAM_LIVE = False
-    START_TIMESTAMP = '1000-01-01 00:00:00'
+    START_TIMESTAMP = CHECK_TIMESTAMP
 # ==================================
 
 # Execute API calls

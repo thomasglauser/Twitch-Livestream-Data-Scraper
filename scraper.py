@@ -47,7 +47,7 @@ STREAM_ID = ''
 STREAM_TITLE = ''
 GAME_ID = ''
 GAME_NAME = ''
-START_TIMESTAMP = ''
+START_TIMESTAMP = '1000-01-01 00:00:00'
 # ==================================
 
 # Get system time

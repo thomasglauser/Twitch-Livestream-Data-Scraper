@@ -11,9 +11,9 @@ The data is then stored in a Google Cloud SQL instance.
 
 - [A Google Cloud SQL Instance](https://cloud.google.com/sql)
 - Python 3.8
-- [python requests](https://pypi.org/project/requests/)
-- [python-dotenv](https://pypi.org/project/python-dotenv/)
-- [mysql-connector-python](https://dev.mysql.com/doc/connector-python/en/)
+- [python requests](https://github.com/psf/requests)
+- [python-dotenv](https://github.com/theskumar/python-dotenv)
+- [mysql-connector-python](https://github.com/mysql/mysql-connector-python)
 
 ## Setup
 

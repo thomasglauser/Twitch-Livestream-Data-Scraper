@@ -2,8 +2,8 @@
 name: Twitch Scraper 1
 
 on:
-  schedule:
-  - cron: "0,30 14-23 * * *" # At 0 and 30, 14-23 UTC Every day
+  #schedule:
+  #- cron: "0,30 14-23 * * *" # At 0 and 30, 14-23 UTC Every day
 
   workflow_dispatch:
 

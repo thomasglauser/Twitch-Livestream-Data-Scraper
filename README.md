@@ -1,6 +1,6 @@
 # Twitch Livestream Data Scraper
 
-![Twitch scraper workflow](https://github.com/AUThomasCH/Toni-Scraper/workflows/Twitch%20scraper%20workflow/badge.svg)
+![Twitch Scraper 1](https://github.com/AUThomasCH/Twitch-Livestream-Data-Scraper/workflows/Twitch%20Scraper%201/badge.svg)
 
 ## Overview
 

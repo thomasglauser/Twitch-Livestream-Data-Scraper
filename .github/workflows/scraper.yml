@@ -43,7 +43,7 @@ jobs:
       - name: Run scraper
         run: python scraper.py
         env:
-          TWITCH_USER_ID: 50985620
+          TWITCH_USER_ID: 97123979
           MYSQL_DB: scraper_1
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
           TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}

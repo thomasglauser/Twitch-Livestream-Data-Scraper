@@ -89,7 +89,7 @@ mysql> SELECT * FROM stream_data;
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com) before submitting pull requests.
+I welcome direct contributions to the Twitch Livestream Data Scraper code base. Thank you!
 
 ## License
 

@@ -1,0 +1,51 @@
+# prettier-ignore
+name: Twitch Scraper 1
+
+on:
+  schedule:
+  - cron: "0,30 14-23 * * *" # At 0 and 30, 14-23 UTC Every day
+
+  workflow_dispatch:
+
+jobs:
+  workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        shell: bash
+
+      - name: Install cloud SQL proxy
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+          echo "$GCP_SQL_KEY" > GCP_SQL_KEY
+          chmod +x cloud_sql_proxy
+          ./cloud_sql_proxy -instances=$GCP_SQL_INSTANCE=tcp:3306 -credential_file=GCP_SQL_KEY &
+        shell: bash
+        env:
+          GCP_SQL_KEY: ${{ secrets.GCP_SQL_KEY }}
+          GCP_SQL_INSTANCE: ${{ secrets.GCP_SQL_INSTANCE }}
+
+      - name: Run scraper
+        run: python scraper.py
+        env:
+          TWITCH_USER_ID: 50985620
+          MYSQL_DB: scraper_1
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PW: ${{ secrets.MYSQL_PW }}

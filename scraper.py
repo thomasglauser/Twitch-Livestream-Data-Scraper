@@ -28,6 +28,7 @@ TWITCH_USER_ID = os.getenv("TWITCH_USER_ID")
 MYSQL_USER = os.getenv("MYSQL_USER")
 MYSQL_PW = os.getenv("MYSQL_PW")
 MYSQL_DB = os.getenv("MYSQL_DB")
+STORE_IF_OFFLINE = os.getenv("STORE_IF_OFFLINE")
 # ==================================
 
 # DB config
@@ -100,6 +101,16 @@ def get_stream_data(client_id, auth_token, user_id):
     START_TIMESTAMP = '1000-01-01 00:00:00'
 # ==================================
 
+# Create DB table function
+# ==================================
+def create_database(cursor):
+  try:
+    cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8mb4'".format(MYSQL_DB))
+  except mysql.connector.Error as err:
+    print("Failed creating DB: {}".format(err))
+    sys.exit(1)
+# ==================================
+
 # Execute API calls
 # ==================================
 TWITCH_AUTH_TOKEN = authenticate(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET)
@@ -122,88 +133,86 @@ print("======================================")
 print()
 # ==================================
 
+# Store data if manually selected or stream is live
+# ==================================
+if STORE_IF_OFFLINE == True or STREAM_LIVE == True:
+
 # Database handling
 # ==================================
-print("Database handling")
-print("======================================")
+  print("Database handling")
+  print("======================================")
 
 # DB scheme
 # ==================================
-TABLES = {}
-TABLES['stream_data'] = (
-    "CREATE TABLE `stream_data` ("
-    "  `STREAM_LIVE` bool,"
-    "  `USER_ID` VARCHAR(30),"
-    "  `STREAM_ID` VARCHAR(30),"
-    "  `STREAM_TITLE` VARCHAR(100),"
-    "  `GAME_ID` VARCHAR(30),"
-    "  `GAME_NAME` VARCHAR(30),"
-    "  `START_TIMESTAMP` datetime,"
-    "  `CHECK_TIMESTAMP` datetime"
-    ") ENGINE=InnoDB")
+  TABLES = {}
+  TABLES['stream_data'] = (
+      "CREATE TABLE `stream_data` ("
+      "  `STREAM_LIVE` bool,"
+      "  `USER_ID` VARCHAR(30),"
+      "  `STREAM_ID` VARCHAR(30),"
+      "  `STREAM_TITLE` VARCHAR(100),"
+      "  `GAME_ID` VARCHAR(30),"
+      "  `GAME_NAME` VARCHAR(30),"
+      "  `START_TIMESTAMP` datetime,"
+      "  `CHECK_TIMESTAMP` datetime"
+      ") ENGINE=InnoDB")
 # ==================================
 
-# Create DB table function
-# ==================================
-def create_database(cursor):
-  try:
-    cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8mb4'".format(MYSQL_DB))
-  except mysql.connector.Error as err:
-    print("Failed creating DB: {}".format(err))
-    sys.exit(1)
-# ==================================
-
-cursor = cnx.cursor()
+  cursor = cnx.cursor()
 
 # Check if DB exists
 # ==================================
-try:
-  cursor.execute("USE {}".format(MYSQL_DB))
-except mysql.connector.Error as err:
-  print("DB {} does not exist yet!".format(MYSQL_DB))
-  if err.errno == errorcode.ER_BAD_DB_ERROR:
-    create_database(cursor)
-    print("DB {} created successfully.".format(MYSQL_DB))
-    cnx.database = MYSQL_DB
-  else:
-    print("DB error: {}".format(err))
-    sys.exit(1)
+  try:
+    cursor.execute("USE {}".format(MYSQL_DB))
+  except mysql.connector.Error as err:
+    print("DB {} does not exist yet!".format(MYSQL_DB))
+    if err.errno == errorcode.ER_BAD_DB_ERROR:
+      create_database(cursor)
+      print("DB {} created successfully.".format(MYSQL_DB))
+      cnx.database = MYSQL_DB
+    else:
+      print("DB error: {}".format(err))
+      sys.exit(1)
 # ==================================
 
 # Check if table exists
 # ==================================
-for table_name in TABLES:
-  table_description = TABLES[table_name]
-  try:
-    print("Creating table {}: ".format(table_name), end='')
-    cursor.execute(table_description)
-  except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-      print("already exists.")
+  for table_name in TABLES:
+    table_description = TABLES[table_name]
+    try:
+      print("Creating table {}: ".format(table_name), end='')
+      cursor.execute(table_description)
+    except mysql.connector.Error as err:
+      if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+        print("already exists.")
+      else:
+        print("DB error: {}".format(err))
+        sys.exit(1)
     else:
-      print("DB error: {}".format(err))
-      sys.exit(1)
-  else:
-    print("OK")
+      print("OK")
 # ==================================
 
 # Data insert
 # ==================================
-add_stream_data = ("INSERT INTO stream_data "
-               "(STREAM_LIVE, USER_ID, STREAM_ID, STREAM_TITLE, GAME_ID, GAME_NAME, START_TIMESTAMP, CHECK_TIMESTAMP) "
-               "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+  add_stream_data = ("INSERT INTO stream_data "
+                 "(STREAM_LIVE, USER_ID, STREAM_ID, STREAM_TITLE, GAME_ID, GAME_NAME, START_TIMESTAMP, CHECK_TIMESTAMP) "
+                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-stream_data = (STREAM_LIVE, USER_ID, STREAM_ID, STREAM_TITLE, GAME_ID, GAME_NAME, START_TIMESTAMP, CHECK_TIMESTAMP)
+  stream_data = (STREAM_LIVE, USER_ID, STREAM_ID, STREAM_TITLE, GAME_ID, GAME_NAME, START_TIMESTAMP, CHECK_TIMESTAMP)
 
-try:
-  cursor.execute(add_stream_data, stream_data)
-  cnx.commit()
-  print("Data insertion successful.")
-except mysql.connector.Error as err:
-  print("Data insertion failed: {}".format(err))
-  sys.exit(1)
+  try:
+    cursor.execute(add_stream_data, stream_data)
+    cnx.commit()
+    print("Data insertion successful.")
+  except mysql.connector.Error as err:
+    print("Data insertion failed: {}".format(err))
+    sys.exit(1)
 
-cursor.close()
-cnx.close()
-print("======================================")
+  cursor.close()
+  cnx.close()
 # ==================================
+
+else:
+  print("Data will not be stored to Database!")
+
+print("======================================")

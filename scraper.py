@@ -133,6 +133,8 @@ print("======================================")
 print()
 # ==================================
 
+print("Store data if stream is offline:", STORE_IF_OFFLINE)
+
 # Store data if manually selected or stream is live
 # ==================================
 if STORE_IF_OFFLINE == True or STREAM_LIVE == True:
@@ -213,6 +215,6 @@ if STORE_IF_OFFLINE == True or STREAM_LIVE == True:
 # ==================================
 
 else:
-  print("Data will not be stored to Database!")
+  pass
 
 print("======================================")

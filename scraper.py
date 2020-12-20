@@ -139,11 +139,6 @@ print("Store data if stream is offline:", STORE_IF_OFFLINE)
 # ==================================
 if STORE_IF_OFFLINE == 'true' or STREAM_LIVE == True:
 
-# Database handling
-# ==================================
-  print("Database handling")
-  print("======================================")
-
 # DB scheme
 # ==================================
   TABLES = {}

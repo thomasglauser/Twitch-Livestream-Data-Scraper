@@ -41,6 +41,7 @@ The data is then stored in a Google Cloud SQL instance.
 1. Define the workflow schedule according to the crontab format. See https://crontab.guru/ for help.
 2. Define the Twitch user_id to scrape in the env variable TWITCH_USER_ID in the scraper.yml file.
 3. Define the MySQL Database name where the data is stored in the env variable MYSQL_DB in the scraper.yml file.
+4. Define if you want to store the data if the livestream is offline. This is defined in the env var STORE_IF_OFFLINE
 
 ## DB scheme:
 

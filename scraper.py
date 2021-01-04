@@ -206,10 +206,12 @@ if STORE_IF_OFFLINE == 'true' or STREAM_LIVE == True:
     sys.exit(1)
 
   cursor.close()
-  cnx.close()
 # ==================================
 
 else:
   pass
+
+# Close DB connection
+cnx.close()
 
 print("======================================")

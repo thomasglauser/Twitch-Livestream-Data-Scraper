@@ -2,9 +2,6 @@
 name: Twitch Scraper 1
 
 on:
-  schedule:
-  - cron: "*/30 * * * *" # At every 30th minute.
-
   workflow_dispatch:
 
 jobs:
